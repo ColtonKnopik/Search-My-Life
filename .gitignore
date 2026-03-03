@@ -1,0 +1,83 @@
+# ============================================================
+# .NET / ASP.NET Core
+# ============================================================
+bin/
+obj/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+.vs/
+
+# NuGet
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+packages/
+
+# Publish output
+publish/
+**/publish/
+
+# ASP.NET Core secrets
+**/appsettings.*.json
+!**/appsettings.json
+!**/appsettings.Development.json
+
+# Entity Framework migrations snapshot backup
+*.bak
+
+# ============================================================
+# SQLite database files
+# ============================================================
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+
+# ============================================================
+# Frontend (Node / Vue / Vite)
+# ============================================================
+node_modules/
+dist/
+dist-ssr/
+coverage/
+*.local
+*.timestamp-*.mjs
+.eslintcache
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env files (keep .env template, ignore local overrides)
+.env.local
+.env.*.local
+
+# Vitest / test artifacts
+__screenshots__/
+
+# ============================================================
+# IDE & Editor
+# ============================================================
+.idea/
+*.swp
+*.swo
+*.sw?
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# ============================================================
+# OS
+# ============================================================
+.DS_Store
+Thumbs.db
+Desktop.ini
