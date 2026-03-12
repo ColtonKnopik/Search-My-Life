@@ -49,19 +49,11 @@ jobs:
         with:
           name: node-app
       
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_7A8DB23FC5A24E4296A4B6779BA8330D }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C73C87F6378B460CABFE8B3C340F4F79 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1800EE7C78864F57A097AF20DBCAC417 }}
-
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'JournalSite'
-          slot-name: 'Production'
+          publish-profile: ${{ secrets.JOURNALSITE_PUBLISH_PROFILE }}
           package: .
 
-          
