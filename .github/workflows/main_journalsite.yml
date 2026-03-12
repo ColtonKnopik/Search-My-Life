@@ -55,6 +55,7 @@ jobs:
         with:
           app-name: 'JournalSite'
           publish-profile: ${{ secrets.JOURNALSITE_PUBLISH_PROFILE }}
-          package: ./SearchMyLife
+          package: .
+
 
 
