@@ -56,11 +56,16 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Auto-create database on startup
+// Auto-create database and seed development data on startup
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.EnsureCreated();
+
+    if (app.Environment.IsDevelopment())
+    {
+        await DbSeeder.SeedAsync(db);
+    }
 }
 
 if (app.Environment.IsDevelopment())
