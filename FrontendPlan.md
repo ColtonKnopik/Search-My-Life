@@ -15,7 +15,7 @@ frontend/
 │   ├── views/             # Page-level components (routed)
 │   ├── router/            # Vue Router config
 │   ├── stores/            # Pinia stores
-│   ├── services/          # API client, crypto, AI helpers
+│   ├── services/          # API client, crypto helpers
 │   ├── utils/             # Shared helpers (date formatting, etc.)
 │   ├── App.vue
 │   └── main.js
@@ -78,26 +78,13 @@ frontend/
 | `views/TimelineView.vue` | Main timeline page — groups entries by month, scrollable |
 | `components/TimelineMonth.vue` | Section header + list of entry cards for one month |
 | `components/EmotionBadge.vue` | Color-coded chip/badge (e.g., 🟢 happy, 🔴 stressed, 🔵 calm) |
-| `components/EntryExpanded.vue` | Expanded entry view with full body, sentiment score, tags, AI summary |
+| `components/EntryExpanded.vue` | Expanded entry view with full body, sentiment score, and tags |
 | `utils/emotionColors.js` | Map of emotion → color/icon for consistent theming |
 | **Unit tests** | Test emotion mapping, date grouping utility |
 
 ---
 
-## Phase 5: AI Reflections & Trends
-**Goal:** Generate and display AI-powered reflections and emotional trend charts.
-
-| Task | Details |
-|---|---|
-| `components/ReflectionCard.vue` | Displays an AI-generated weekly/monthly reflection |
-| `views/InsightsView.vue` | Dashboard with emotion trend chart + generated reflections |
-| `services/insightService.js` | `generateReflection(timeRange)`, `getEmotionTrends(timeRange)` |
-| Chart integration | Use a lightweight chart lib (e.g., Chart.js via `vue-chartjs`) for emotion trends |
-| **Unit tests** | Test data transformation for chart input |
-
----
-
-## Phase 6: Polish & Testing
+## Phase 5: Polish & Testing
 
 | Task | Details |
 |---|---|
@@ -119,7 +106,6 @@ frontend/
 | `/entry/new` | `JournalEntryView` | Yes |
 | `/entry/:id` | `JournalEntryView` (edit) | Yes |
 | `/search` | `SearchResultsView` | Yes |
-| `/insights` | `InsightsView` | Yes |
 
 ---
 
@@ -129,5 +115,4 @@ frontend/
 3. **Phase 2** — Crypto service + journal CRUD (hardest piece — start early)
 4. **Phase 3** — Search bar + results
 5. **Phase 4** — Timeline + emotion display
-6. **Phase 5** — AI reflections + charts
-7. **Phase 6** — Polish
+6. **Phase 5** — Polish

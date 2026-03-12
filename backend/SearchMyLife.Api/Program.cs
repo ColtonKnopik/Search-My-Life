@@ -36,6 +36,7 @@ builder.Services.AddAuthorization();
 
 // Application services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IJournalService, JournalService>();
 
 // Controllers
 builder.Services.AddControllers();
@@ -66,8 +67,10 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
-app.UseHttpsRedirection();
+else
+{
+    app.UseHttpsRedirection();
+}
 app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();

@@ -12,28 +12,36 @@ const vuetify = createVuetify({
     themes: {
       light: {
         colors: {
-          primary: '#5C6BC0',
-          secondary: '#26A69A',
-          accent: '#FF7043',
-          error: '#EF5350',
-          warning: '#FFA726',
-          info: '#42A5F5',
-          success: '#66BB6A',
-          background: '#F5F5F5',
-          surface: '#FFFFFF',
+          primary:    '#6b9080',  // Jungle Teal
+          secondary:  '#a4c3b2',  // Muted Teal
+          accent:     '#cce3de',  // Frozen Water
+          background: '#eaf4f4',  // Azure Mist
+          surface:    '#f6fff8',  // Mint Cream
+          error:      '#c0544a',
+          warning:    '#c08b3a',
+          info:       '#4a8fa4',
+          success:    '#5a9070',
+          'on-primary':    '#ffffff',
+          'on-secondary':  '#263d35',
+          'on-background': '#263d35',
+          'on-surface':    '#263d35',
         },
       },
       dark: {
         colors: {
-          primary: '#7986CB',
-          secondary: '#4DB6AC',
-          accent: '#FF8A65',
-          error: '#EF5350',
-          warning: '#FFA726',
-          info: '#42A5F5',
-          success: '#66BB6A',
-          background: '#121212',
-          surface: '#1E1E1E',
+          primary:    '#6b9080',  // Jungle Teal
+          secondary:  '#a4c3b2',  // Muted Teal
+          accent:     '#cce3de',  // Frozen Water
+          background: '#0f1e1a',
+          surface:    '#1a2e27',
+          error:      '#e07068',
+          warning:    '#e0a855',
+          info:       '#6ab4cc',
+          success:    '#7ab898',
+          'on-primary':    '#ffffff',
+          'on-secondary':  '#0f1e1a',
+          'on-background': '#dff0e8',
+          'on-surface':    '#dff0e8',
         },
       },
     },

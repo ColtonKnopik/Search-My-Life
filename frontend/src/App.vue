@@ -15,7 +15,6 @@ const navItems = [
   { title: 'Timeline', icon: 'mdi-timeline-clock-outline', to: '/timeline' },
   { title: 'New Entry', icon: 'mdi-pencil-plus-outline', to: '/entry/new' },
   { title: 'Search', icon: 'mdi-magnify', to: '/search' },
-  { title: 'Insights', icon: 'mdi-chart-line', to: '/insights' },
 ]
 
 function toggleTheme() {

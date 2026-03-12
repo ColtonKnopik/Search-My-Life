@@ -41,12 +41,6 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/insights',
-      name: 'insights',
-      component: () => import('@/views/InsightsView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
       path: '/',
       redirect: '/timeline',
     },
