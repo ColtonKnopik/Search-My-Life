@@ -25,16 +25,24 @@ jobs:
 
       - name: npm install, build, and test
         working-directory: ./SearchMyLife
+        env:
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
         run: |
           npm install
           npm run build --if-present
           npm run test --if-present
 
+      - name: Prepare deployment package
+        working-directory: ./SearchMyLife
+        run: |
+          cp server.cjs dist/server.cjs
+          echo '{"scripts":{"start":"node server.cjs"}}' > dist/package.json
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: ./SearchMyLife
+          path: ./SearchMyLife/dist
 
   deploy:
     runs-on: ubuntu-latest
