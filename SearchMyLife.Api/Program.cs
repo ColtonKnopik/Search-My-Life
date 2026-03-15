@@ -41,12 +41,16 @@ builder.Services.AddScoped<IJournalService, JournalService>();
 // Controllers
 builder.Services.AddControllers();
 
-// CORS for Vue dev server
+// CORS — origins read from config so Azure App Settings can override
+var allowedOrigins = builder.Configuration
+    .GetSection("AllowedOrigins")
+    .Get<string[]>() ?? [];
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
