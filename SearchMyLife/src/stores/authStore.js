@@ -4,7 +4,17 @@ import apiClient from '@/services/apiClient'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('token') || null)
-  const user = ref(JSON.parse(localStorage.getItem('user') || 'null'))
+  const user = ref(parseStoredUser())
+
+  function parseStoredUser() {
+    try {
+      return JSON.parse(localStorage.getItem('user') || 'null')
+    } catch {
+      localStorage.removeItem('user')
+      localStorage.removeItem('token')
+      return null
+    }
+  }
 
   const isAuthenticated = computed(() => !!token.value)
 
