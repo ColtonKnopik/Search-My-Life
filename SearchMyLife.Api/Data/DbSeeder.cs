@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using SearchMyLife.Api.Models;
+using SearchMyLife.Api.Services;
 
 namespace SearchMyLife.Api.Data;
 
@@ -27,6 +28,47 @@ public static class DbSeeder
         var entries = BuildEntries(SeedUserId);
         db.JournalEntries.AddRange(entries);
         await db.SaveChangesAsync();
+    }
+
+    public static async Task SeedEmbeddingsAsync(
+        AppDbContext db,
+        IAiService aiService,
+        IVectorSearchService vectorSearchService,
+        ILogger logger)
+    {
+        var entries = await db.JournalEntries
+            .Where(e => e.UserId == SeedUserId && e.Summary != null)
+            .ToListAsync();
+
+        if (entries.Count == 0)
+            return;
+
+        logger.LogInformation("Seeding embeddings for {Count} entries...", entries.Count);
+
+        foreach (var entry in entries)
+        {
+            try
+            {
+                var tags = DeserializeTags(entry.Tags);
+                var embeddingText = entry.Summary + " " + string.Join(" ", tags);
+                var embedding = await aiService.EmbedAsync(embeddingText);
+                await vectorSearchService.UpsertEmbeddingAsync(entry.Id, entry.UserId, embedding);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Failed to seed embedding for entry {EntryId}.", entry.Id);
+            }
+        }
+
+        logger.LogInformation("Embedding seeding complete.");
+    }
+
+    private static string[] DeserializeTags(string? tagsJson)
+    {
+        if (string.IsNullOrWhiteSpace(tagsJson))
+            return [];
+        try { return JsonSerializer.Deserialize<string[]>(tagsJson) ?? []; }
+        catch { return []; }
     }
 
     private static List<JournalEntry> BuildEntries(Guid userId)

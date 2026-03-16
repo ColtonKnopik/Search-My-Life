@@ -67,5 +67,19 @@ export const useJournalStore = defineStore('journal', () => {
     }
   }
 
-  return { entries, loading, error, fetchEntries, createEntry, updateEntry, deleteEntry }
+  async function analyzeEntry(id, plaintext) {
+    try {
+      const response = await apiClient.post(`/entries/${id}/analyze`, { plaintext })
+      const index = entries.value.findIndex((e) => e.id === id)
+      if (index !== -1) {
+        entries.value[index] = { ...entries.value[index], ...response.data }
+      }
+      return response.data
+    } catch (err) {
+      // Analysis failure is non-critical — entry is already saved
+      console.warn('AI analysis failed:', err.message)
+    }
+  }
+
+  return { entries, loading, error, fetchEntries, createEntry, updateEntry, deleteEntry, analyzeEntry }
 })

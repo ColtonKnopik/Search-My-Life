@@ -14,10 +14,12 @@ namespace SearchMyLife.Api.Controllers;
 public class EntriesController : ControllerBase
 {
     private readonly IJournalService _journalService;
+    private readonly IVectorSearchService _vectorSearchService;
 
-    public EntriesController(IJournalService journalService)
+    public EntriesController(IJournalService journalService, IVectorSearchService vectorSearchService)
     {
         _journalService = journalService;
+        _vectorSearchService = vectorSearchService;
     }
 
     private Guid GetUserId()
@@ -90,6 +92,9 @@ public class EntriesController : ControllerBase
 
         if (!deleted)
             return NotFound(new { message = "Entry not found." });
+
+        // Remove embedding from Azure AI Search
+        await _vectorSearchService.DeleteEmbeddingAsync(id);
 
         return NoContent();
     }

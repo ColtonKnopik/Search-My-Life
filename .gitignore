@@ -24,7 +24,6 @@ publish/
 # ASP.NET Core secrets
 **/appsettings.*.json
 !**/appsettings.json
-!**/appsettings.Development.json
 
 # Entity Framework migrations snapshot backup
 *.bak

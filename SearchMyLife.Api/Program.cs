@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SearchMyLife.Api.Config;
 using SearchMyLife.Api.Data;
 using SearchMyLife.Api.Services;
 
@@ -38,6 +39,12 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJournalService, JournalService>();
 
+// AI services
+builder.Services.Configure<OpenAISettings>(builder.Configuration.GetSection("OpenAI"));
+builder.Services.Configure<AzureSearchSettings>(builder.Configuration.GetSection("AzureSearch"));
+builder.Services.AddSingleton<IAiService, AiService>();
+builder.Services.AddSingleton<IVectorSearchService, VectorSearchService>();
+
 // Controllers
 builder.Services.AddControllers();
 
@@ -70,6 +77,20 @@ using (var scope = app.Services.CreateScope())
     {
         await DbSeeder.SeedAsync(db);
     }
+}
+
+// Ensure Azure AI Search index exists
+var vectorSearch = app.Services.GetRequiredService<IVectorSearchService>();
+await vectorSearch.EnsureIndexExistsAsync();
+
+// Seed embeddings for existing seed data (dev only, safe to re-run)
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var aiService = app.Services.GetRequiredService<IAiService>();
+    var seederLogger = app.Services.GetRequiredService<ILogger<Program>>();
+    await DbSeeder.SeedEmbeddingsAsync(db, aiService, vectorSearch, seederLogger);
 }
 
 if (app.Environment.IsDevelopment())

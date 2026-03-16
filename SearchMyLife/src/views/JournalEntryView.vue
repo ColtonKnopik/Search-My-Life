@@ -10,6 +10,7 @@ const journalStore = useJournalStore()
 const title = ref('')
 const content = ref('')
 const loading = ref(false)
+const analyzing = ref(false)
 const error = ref(null)
 
 const isEditing = computed(() => !!route.params.id)
@@ -38,11 +39,21 @@ async function handleSave() {
       title: title.value,
       content: content.value,
     }
+    let saved
     if (isEditing.value) {
-      await journalStore.updateEntry(route.params.id, entryData)
+      saved = await journalStore.updateEntry(route.params.id, entryData)
     } else {
-      await journalStore.createEntry(entryData)
+      saved = await journalStore.createEntry(entryData)
     }
+
+    // Trigger AI analysis in the background (non-blocking)
+    if (saved?.id && content.value.trim()) {
+      analyzing.value = true
+      journalStore.analyzeEntry(saved.id, content.value).finally(() => {
+        analyzing.value = false
+      })
+    }
+
     router.push('/timeline')
   } catch (err) {
     error.value = err.response?.data?.message || 'Failed to save entry.'
