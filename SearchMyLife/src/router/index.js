@@ -42,7 +42,9 @@ const router = createRouter({
     },
     {
       path: '/',
-      redirect: '/timeline',
+      name: 'landing',
+      component: () => import('@/views/LandingView.vue'),
+      meta: { requiresAuth: false },
     },
   ],
 })
