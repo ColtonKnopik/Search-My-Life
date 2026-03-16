@@ -8,9 +8,15 @@ using SearchMyLife.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// EF Core + SQLite
+// EF Core + SQLite — resolve relative path from the content root so the DB
+// file survives deployments when an absolute path is set via Azure App Settings.
+var rawConnStr = builder.Configuration.GetConnectionString("DefaultConnection")!;
+var connStr = rawConnStr.Contains(':') || rawConnStr.Contains('/')
+    ? rawConnStr  // already absolute (e.g. set via Azure App Settings)
+    : rawConnStr.Replace("Data Source=", $"Data Source={builder.Environment.ContentRootPath}/");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(connStr));
 
 // JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");
@@ -86,11 +92,15 @@ await vectorSearch.EnsureIndexExistsAsync();
 // Seed embeddings for existing seed data (dev only, safe to re-run)
 if (app.Environment.IsDevelopment())
 {
-    using var scope = app.Services.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var aiService = app.Services.GetRequiredService<IAiService>();
-    var seederLogger = app.Services.GetRequiredService<ILogger<Program>>();
-    await DbSeeder.SeedEmbeddingsAsync(db, aiService, vectorSearch, seederLogger);
+    var aiConfig = app.Configuration.GetSection("OpenAI")["ApiKey"];
+    if (!string.IsNullOrEmpty(aiConfig))
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var aiService = app.Services.GetRequiredService<IAiService>();
+        var seederLogger = app.Services.GetRequiredService<ILogger<Program>>();
+        await DbSeeder.SeedEmbeddingsAsync(db, aiService, vectorSearch, seederLogger);
+    }
 }
 
 if (app.Environment.IsDevelopment())

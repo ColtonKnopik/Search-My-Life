@@ -321,12 +321,14 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
+
+let observer = null
 
 onMounted(() => {
   // Scroll reveal observer
   const reveals = document.querySelectorAll('.reveal')
-  const observer = new IntersectionObserver(
+  observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -343,6 +345,13 @@ onMounted(() => {
   )
 
   reveals.forEach((el) => observer.observe(el))
+})
+
+onUnmounted(() => {
+  if (observer) {
+    observer.disconnect()
+    observer = null
+  }
 })
 </script>
 

@@ -10,9 +10,10 @@ namespace SearchMyLife.Api.Services;
 
 public class AiService : IAiService
 {
-    private readonly ChatClient _chatClient;
-    private readonly EmbeddingClient _embeddingClient;
+    private readonly ChatClient? _chatClient;
+    private readonly EmbeddingClient? _embeddingClient;
     private readonly ILogger<AiService> _logger;
+    private readonly bool _isConfigured;
 
     private const string AnalysisPrompt = """
         You are an AI journal analyst. Given the following journal entry, extract:
@@ -28,6 +29,15 @@ public class AiService : IAiService
     {
         _logger = logger;
         var options = settings.Value;
+
+        if (string.IsNullOrEmpty(options.ApiKey))
+        {
+            _logger.LogWarning("OpenAI is not configured. AI features will be unavailable.");
+            _isConfigured = false;
+            return;
+        }
+
+        _isConfigured = true;
         var client = new OpenAIClient(new ApiKeyCredential(options.ApiKey));
         _chatClient = client.GetChatClient(options.CompletionModel);
         _embeddingClient = client.GetEmbeddingClient(options.EmbeddingModel);
@@ -35,6 +45,9 @@ public class AiService : IAiService
 
     public async Task<EntryAnalysis> AnalyzeAsync(string plaintext)
     {
+        if (!_isConfigured)
+            throw new InvalidOperationException("OpenAI is not configured.");
+
         var messages = new List<ChatMessage>
         {
             new SystemChatMessage(AnalysisPrompt),
@@ -66,7 +79,10 @@ public class AiService : IAiService
 
     public async Task<ReadOnlyMemory<float>> EmbedAsync(string text)
     {
-        var response = await _embeddingClient.GenerateEmbeddingAsync(text);
+        if (!_isConfigured)
+            throw new InvalidOperationException("OpenAI is not configured.");
+
+        var response = await _embeddingClient!.GenerateEmbeddingAsync(text);
         return response.Value.ToFloats();
     }
 
