@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -13,10 +13,13 @@ const showPassword = ref(false)
 const loading = ref(false)
 const error = ref(null)
 
-const passwordsMatch = () => password.value === confirmPassword.value
+const passwordsMatch = computed(() => password.value === confirmPassword.value)
+const confirmPasswordErrors = computed(() =>
+  confirmPassword.value && !passwordsMatch.value ? ['Passwords do not match'] : []
+)
 
 async function handleRegister() {
-  if (!passwordsMatch()) {
+  if (!passwordsMatch.value) {
     error.value = 'Passwords do not match.'
     return
   }
@@ -82,7 +85,7 @@ async function handleRegister() {
             variant="outlined"
             class="mb-4"
             required
-            :error-messages="confirmPassword && !passwordsMatch() ? ['Passwords do not match'] : []"
+            :error-messages="confirmPasswordErrors"
           />
           <v-btn
             type="submit"
