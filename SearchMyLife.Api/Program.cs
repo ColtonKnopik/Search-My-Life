@@ -8,15 +8,26 @@ using SearchMyLife.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// EF Core + SQLite — resolve relative path from the content root so the DB
-// file survives deployments when an absolute path is set via Azure App Settings.
+// EF Core — use SQL Server if the connection string looks like one, otherwise SQLite.
+// Set ConnectionStrings__DefaultConnection in Azure App Settings for production.
 var rawConnStr = builder.Configuration.GetConnectionString("DefaultConnection")!;
-var connStr = rawConnStr.Contains(':') || rawConnStr.Contains('/')
-    ? rawConnStr  // already absolute (e.g. set via Azure App Settings)
-    : rawConnStr.Replace("Data Source=", $"Data Source={builder.Environment.ContentRootPath}/");
+var isSqlServer = rawConnStr.Contains("Server=", StringComparison.OrdinalIgnoreCase)
+                  || rawConnStr.Contains("Data Source=tcp:", StringComparison.OrdinalIgnoreCase)
+                  || rawConnStr.Contains("Initial Catalog", StringComparison.OrdinalIgnoreCase);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(connStr));
+{
+    if (isSqlServer)
+        options.UseSqlServer(rawConnStr);
+    else
+    {
+        // Resolve relative SQLite path from content root
+        var connStr = rawConnStr.Contains(':') || rawConnStr.Contains('/')
+            ? rawConnStr
+            : rawConnStr.Replace("Data Source=", $"Data Source={builder.Environment.ContentRootPath}/");
+        options.UseSqlite(connStr);
+    }
+});
 
 // JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");
