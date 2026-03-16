@@ -9,10 +9,12 @@ namespace SearchMyLife.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, ILogger<AuthController> logger)
     {
         _authService = authService;
+        _logger = logger;
     }
 
     [HttpPost("register")]
@@ -27,6 +29,11 @@ public class AuthController : ControllerBase
         {
             return Conflict(new { message = ex.Message });
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Register failed for {Email}", request.Email);
+            return StatusCode(500, new { message = "Registration failed. Please try again later." });
+        }
     }
 
     [HttpPost("login")]
@@ -40,6 +47,11 @@ public class AuthController : ControllerBase
         catch (UnauthorizedAccessException ex)
         {
             return Unauthorized(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Login failed for {Email}", request.Email);
+            return StatusCode(500, new { message = "Login failed. Please try again later." });
         }
     }
 }

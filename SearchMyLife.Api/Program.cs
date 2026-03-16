@@ -87,8 +87,17 @@ var app = builder.Build();
 // Auto-create database and seed development data on startup
 using (var scope = app.Services.CreateScope())
 {
+    var startupLogger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated();
+    try
+    {
+        db.Database.EnsureCreated();
+        startupLogger.LogInformation("Database ready.");
+    }
+    catch (Exception ex)
+    {
+        startupLogger.LogError(ex, "Database initialisation failed. Check the connection string and firewall rules.");
+    }
 
     if (app.Environment.IsDevelopment())
     {
