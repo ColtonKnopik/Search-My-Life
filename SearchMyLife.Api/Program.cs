@@ -107,7 +107,15 @@ using (var scope = app.Services.CreateScope())
 
 // Ensure Azure AI Search index exists
 var vectorSearch = app.Services.GetRequiredService<IVectorSearchService>();
-await vectorSearch.EnsureIndexExistsAsync();
+try
+{
+    await vectorSearch.EnsureIndexExistsAsync();
+}
+catch (Exception ex)
+{
+    var startupLog = app.Services.GetRequiredService<ILogger<Program>>();
+    startupLog.LogError(ex, "Azure AI Search index setup failed. Search will be unavailable.");
+}
 
 // Seed embeddings for existing seed data (dev only, safe to re-run)
 if (app.Environment.IsDevelopment())

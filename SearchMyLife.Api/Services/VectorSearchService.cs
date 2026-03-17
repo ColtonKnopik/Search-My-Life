@@ -68,13 +68,12 @@ public class VectorSearchService : IVectorSearchService
 
         try
         {
-            await _indexClient.CreateOrUpdateIndexAsync(definition);
+            await _indexClient!.CreateOrUpdateIndexAsync(definition);
             _logger.LogInformation("Azure AI Search index '{IndexName}' is ready.", _indexName);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create or update Azure AI Search index '{IndexName}'.", _indexName);
-            throw;
+            _logger.LogError(ex, "Failed to create or update Azure AI Search index '{IndexName}'. Search will be unavailable.", _indexName);
         }
     }
 
