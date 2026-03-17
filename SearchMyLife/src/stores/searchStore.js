@@ -1,12 +1,16 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import apiClient from '@/services/apiClient'
 
 export const useSearchStore = defineStore('search', () => {
   const query = ref('')
-  const results = ref([])
+  const overview = ref('')
+  const topResults = ref([])
+  const otherResults = ref([])
   const isSearching = ref(false)
   const error = ref(null)
+
+  const hasResults = computed(() => topResults.value.length > 0 || otherResults.value.length > 0)
 
   async function search(searchQuery) {
     query.value = searchQuery
@@ -14,7 +18,9 @@ export const useSearchStore = defineStore('search', () => {
     error.value = null
     try {
       const response = await apiClient.post('/search', { query: searchQuery })
-      results.value = response.data
+      overview.value = response.data.overview || ''
+      topResults.value = response.data.topResults || []
+      otherResults.value = response.data.otherResults || []
     } catch (err) {
       error.value = err.message
     } finally {
@@ -24,8 +30,10 @@ export const useSearchStore = defineStore('search', () => {
 
   function clearResults() {
     query.value = ''
-    results.value = []
+    overview.value = ''
+    topResults.value = []
+    otherResults.value = []
   }
 
-  return { query, results, isSearching, error, search, clearResults }
+  return { query, overview, topResults, otherResults, hasResults, isSearching, error, search, clearResults }
 })

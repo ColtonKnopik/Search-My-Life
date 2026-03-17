@@ -6,6 +6,14 @@ defineProps({
     type: Object,
     required: true,
   },
+  rank: {
+    type: Number,
+    default: null,
+  },
+  relevanceReason: {
+    type: String,
+    default: null,
+  },
 })
 
 const expanded = ref(false)
@@ -13,18 +21,24 @@ const expanded = ref(false)
 
 <template>
   <v-card
-    class="entry-card"
-    elevation="2"
+    :class="['entry-card', { 'featured-card': rank !== null }]"
+    :elevation="rank !== null ? 4 : 2"
     rounded="lg"
     hover
+    :border="rank !== null"
     @click="expanded = !expanded"
   >
     <v-card-item>
+      <template v-if="rank !== null" #prepend>
+        <v-avatar color="primary" variant="tonal" size="36" class="mr-2">
+          <span class="text-body-1 font-weight-bold">{{ rank }}</span>
+        </v-avatar>
+      </template>
       <v-card-title class="text-subtitle-1 font-weight-bold">
         {{ entry.title || 'Untitled Entry' }}
       </v-card-title>
       <v-card-subtitle>
-        {{ new Date(entry.createdAt).toLocaleDateString('default', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}
+        {{ new Date(entry.createdAt).toLocaleDateString('default', { weekday: rank === null ? 'long' : undefined, year: 'numeric', month: 'long', day: 'numeric' }) }}
       </v-card-subtitle>
     </v-card-item>
 
@@ -43,6 +57,16 @@ const expanded = ref(false)
       <p v-if="entry.summary" class="text-body-2 text-medium-emphasis">
         {{ entry.summary }}
       </p>
+      <v-alert
+        v-if="relevanceReason"
+        density="compact"
+        variant="tonal"
+        color="primary"
+        icon="mdi-lightbulb-outline"
+        class="text-body-2 mt-3"
+      >
+        {{ relevanceReason }}
+      </v-alert>
     </v-card-text>
 
     <v-expand-transition>
@@ -71,3 +95,10 @@ const expanded = ref(false)
     </v-expand-transition>
   </v-card>
 </template>
+
+<style scoped>
+.featured-card {
+  border-color: rgb(var(--v-theme-primary)) !important;
+  border-width: 1px;
+}
+</style>
