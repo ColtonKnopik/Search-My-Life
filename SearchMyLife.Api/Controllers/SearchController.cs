@@ -18,15 +18,18 @@ public class SearchController : ControllerBase
     private readonly AppDbContext _db;
     private readonly IAiService _aiService;
     private readonly IVectorSearchService _vectorSearchService;
+    private readonly ILogger<SearchController> _logger;
 
     public SearchController(
         AppDbContext db,
         IAiService aiService,
-        IVectorSearchService vectorSearchService)
+        IVectorSearchService vectorSearchService,
+        ILogger<SearchController> logger)
     {
         _db = db;
         _aiService = aiService;
         _vectorSearchService = vectorSearchService;
+        _logger = logger;
     }
 
     private Guid GetUserId()
@@ -41,6 +44,8 @@ public class SearchController : ControllerBase
     {
         var userId = GetUserId();
 
+        try
+        {
         // Embed the search query
         var queryEmbedding = await _aiService.EmbedAsync(request.Query);
 
@@ -82,5 +87,11 @@ public class SearchController : ControllerBase
             .ToList();
 
         return Ok(results);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Search failed for user {UserId}.", userId);
+            return StatusCode(500, new { message = "Search failed. Check that OpenAI and Azure Search are configured in App Settings." });
+        }
     }
 }

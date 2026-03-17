@@ -50,6 +50,8 @@ public class AnalysisController : ControllerBase
         if (entry is null)
             return NotFound(new { message = "Entry not found." });
 
+        try
+        {
         // Call OpenAI for analysis
         var analysis = await _aiService.AnalyzeAsync(request.Plaintext);
 
@@ -77,5 +79,11 @@ public class AnalysisController : ControllerBase
             Tags = analysis.Tags,
             Summary = analysis.Summary
         });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Analysis failed for entry {EntryId}.", id);
+            return StatusCode(500, new { message = "AI analysis failed. Check that OpenAI and Azure Search are configured in App Settings." });
+        }
     }
 }
