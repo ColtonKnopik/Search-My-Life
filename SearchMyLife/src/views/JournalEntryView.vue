@@ -11,20 +11,41 @@ const title = ref('')
 const content = ref('')
 const loading = ref(false)
 const analyzing = ref(false)
+const analyzeSuccess = ref(false)
+const analyzeError = ref(null)
 const error = ref(null)
+const currentEntry = ref(null)
 
 const isEditing = computed(() => !!route.params.id)
 const pageTitle = computed(() => (isEditing.value ? 'Edit Entry' : 'New Entry'))
+const needsAnalysis = computed(() => isEditing.value && currentEntry.value && !currentEntry.value.emotion)
 
 onMounted(async () => {
   if (isEditing.value) {
     const entry = journalStore.entries.find((e) => e.id === route.params.id)
     if (entry) {
+      currentEntry.value = entry
       title.value = entry.title || ''
       content.value = entry.content || ''
     }
   }
 })
+
+async function handleReanalyze() {
+  if (!content.value.trim()) return
+  analyzing.value = true
+  analyzeError.value = null
+  analyzeSuccess.value = false
+  try {
+    await journalStore.analyzeEntry(route.params.id, content.value)
+    analyzeSuccess.value = true
+    currentEntry.value = journalStore.entries.find((e) => e.id === route.params.id)
+  } catch {
+    analyzeError.value = 'Re-analysis failed. Check that AI is configured.'
+  } finally {
+    analyzing.value = false
+  }
+}
 
 async function handleSave() {
   if (!content.value.trim()) {
@@ -49,9 +70,9 @@ async function handleSave() {
     // Trigger AI analysis in the background (non-blocking)
     if (saved?.id && content.value.trim()) {
       analyzing.value = true
-      journalStore.analyzeEntry(saved.id, content.value).finally(() => {
-        analyzing.value = false
-      })
+      journalStore.analyzeEntry(saved.id, content.value)
+        .catch(() => {}) // non-critical — entry is saved regardless
+        .finally(() => { analyzing.value = false })
     }
 
     router.push('/timeline')
@@ -74,6 +95,29 @@ async function handleSave() {
 
     <v-alert v-if="error" type="error" class="mb-4" closable @click:close="error = null">
       {{ error }}
+    </v-alert>
+
+    <v-alert v-if="analyzeSuccess" type="success" class="mb-4" closable @click:close="analyzeSuccess = false">
+      Entry analyzed — it will now appear in search results.
+    </v-alert>
+
+    <v-alert v-if="analyzeError" type="warning" class="mb-4" closable @click:close="analyzeError = null">
+      {{ analyzeError }}
+    </v-alert>
+
+    <v-alert v-if="needsAnalysis" type="info" variant="tonal" class="mb-4" :icon="false">
+      <div class="d-flex align-center justify-space-between flex-wrap gap-2">
+        <span>This entry hasn't been analyzed yet and won't appear in search results.</span>
+        <v-btn
+          size="small"
+          color="primary"
+          :loading="analyzing"
+          prepend-icon="mdi-brain"
+          @click="handleReanalyze"
+        >
+          Analyze Now
+        </v-btn>
+      </div>
     </v-alert>
 
     <v-card class="pa-6" elevation="2" rounded="lg">

@@ -76,8 +76,9 @@ export const useJournalStore = defineStore('journal', () => {
       }
       return response.data
     } catch (err) {
-      // Analysis failure is non-critical — entry is already saved
+      // Always log. Re-throw so callers can handle failures explicitly.
       console.warn('AI analysis failed:', err.message)
+      throw err
     }
   }
 
