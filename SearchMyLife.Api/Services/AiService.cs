@@ -86,11 +86,63 @@ public class AiService : IAiService
         return response.Value.ToFloats();
     }
 
+    public async Task<SearchSummary> SummarizeSearchAsync(string query, string[] topSummaries)
+    {
+        if (!_isConfigured)
+            throw new InvalidOperationException("OpenAI is not configured.");
+
+        var entriesList = string.Join("\n", topSummaries.Select((s, i) => $"{i + 1}. {s}"));
+
+        var prompt = $$"""
+            The user searched their journal for: "{{query}}"
+
+            The top matching entries are:
+            {{entriesList}}
+
+            Respond with valid JSON only. No markdown, no explanation.
+            {
+              "overview": "A 1-2 sentence summary connecting these entries to the query.",
+              "relevanceExplanations": ["Why entry 1 matches", "Why entry 2 matches", "Why entry 3 matches"]
+            }
+            Provide exactly {{topSummaries.Length}} relevanceExplanations, one per entry. Keep each explanation to one concise sentence.
+            """;
+
+        var messages = new List<ChatMessage>
+        {
+            new SystemChatMessage("You are a journal search assistant. Be warm and insightful."),
+            new UserChatMessage(prompt)
+        };
+
+        var options = new ChatCompletionOptions
+        {
+            ResponseFormat = ChatResponseFormat.CreateJsonObjectFormat()
+        };
+
+        var response = await _chatClient!.CompleteChatAsync(messages, options);
+        var json = response.Value.Content[0].Text;
+
+        var result = JsonSerializer.Deserialize<SearchSummaryJson>(json, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
+        return new SearchSummary(
+            Overview: result?.Overview ?? string.Empty,
+            RelevanceExplanations: result?.RelevanceExplanations ?? []
+        );
+    }
+
     private sealed class AnalysisJson
     {
         public string? Emotion { get; set; }
         public double SentimentScore { get; set; }
         public string[]? Tags { get; set; }
         public string? Summary { get; set; }
+    }
+
+    private sealed class SearchSummaryJson
+    {
+        public string? Overview { get; set; }
+        public string[]? RelevanceExplanations { get; set; }
     }
 }

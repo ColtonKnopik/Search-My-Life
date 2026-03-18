@@ -49,11 +49,11 @@ public class SearchController : ControllerBase
         // Embed the search query
         var queryEmbedding = await _aiService.EmbedAsync(request.Query);
 
-        // Search Azure AI Search for similar entries
-        var vectorResults = await _vectorSearchService.SearchAsync(userId, queryEmbedding);
+        // Search Azure AI Search for similar entries (fetch up to 13: 3 top + 10 other)
+        var vectorResults = await _vectorSearchService.SearchAsync(userId, queryEmbedding, topK: 13);
 
         if (vectorResults.Count == 0)
-            return Ok(Array.Empty<SearchResultResponse>());
+            return Ok(new SearchResponse());
 
         // Fetch matching entries from SQLite
         var entryIds = vectorResults.Select(r => r.EntryId).ToList();
@@ -63,7 +63,7 @@ public class SearchController : ControllerBase
 
         // Map to response with scores, sorted by score descending
         var scoreLookup = vectorResults.ToDictionary(r => r.EntryId, r => r.Score);
-        var results = entries
+        var allResults = entries
             .Select(e =>
             {
                 var response = EntryResponse.FromEntity(e);
@@ -86,7 +86,41 @@ public class SearchController : ControllerBase
             .OrderByDescending(r => r.Score)
             .ToList();
 
-        return Ok(results);
+        // Split into top 3 and the rest (up to 10)
+        var topResults = allResults.Take(3).ToList();
+        var otherResults = allResults.Skip(3).Take(10).ToList();
+
+        // Generate AI summary for the top 3
+        var overview = string.Empty;
+        var topSummaries = topResults
+            .Select(r => r.Summary ?? r.Title)
+            .Where(s => !string.IsNullOrEmpty(s))
+            .ToArray();
+
+        if (topSummaries.Length > 0)
+        {
+            try
+            {
+                var searchSummary = await _aiService.SummarizeSearchAsync(request.Query, topSummaries);
+                overview = searchSummary.Overview;
+
+                for (var i = 0; i < Math.Min(topResults.Count, searchSummary.RelevanceExplanations.Length); i++)
+                {
+                    topResults[i].RelevanceReason = searchSummary.RelevanceExplanations[i];
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Search summary generation failed; returning results without AI overview.");
+            }
+        }
+
+        return Ok(new SearchResponse
+        {
+            Overview = overview,
+            TopResults = topResults,
+            OtherResults = otherResults
+        });
         }
         catch (Exception ex)
         {
