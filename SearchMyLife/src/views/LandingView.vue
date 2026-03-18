@@ -115,32 +115,44 @@
         </div>
         <div class="features-grid">
           <div class="feature-card reveal">
-            <div class="feature-icon">🔍</div>
+            <div class="feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </div>
             <h3>Semantic Search</h3>
             <p>Find entries by meaning, not memory. Ask real questions and get relevant results from months or years ago — even if you never used the exact same words.</p>
           </div>
           <div class="feature-card reveal">
-            <div class="feature-icon">🔐</div>
+            <div class="feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
             <h3>End-to-End Encryption</h3>
             <p>Your entries are encrypted in your browser using AES-256 before being stored. Not even the developer can read your journal. Your secrets are truly yours.</p>
           </div>
           <div class="feature-card reveal">
-            <div class="feature-icon">📅</div>
+            <div class="feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+            </div>
             <h3>Timeline View</h3>
             <p>Browse your history month by month. Entries are color-coded by emotion, giving you a visual map of your inner life over time.</p>
           </div>
           <div class="feature-card reveal">
-            <div class="feature-icon">💡</div>
+            <div class="feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+            </div>
             <h3>AI Insights</h3>
-            <p>Each entry is tagged with sentiment, emotion, and a short AI summary. Search by emotion — "stressed," "hopeful," "grateful" — to find specific moments.</p>
+            <p>Each entry is automatically tagged with emotion. Search semantically — "stressed," "hopeful," "grateful" — and the AI finds the right entries even if you never used those exact words.</p>
           </div>
           <div class="feature-card reveal">
-            <div class="feature-icon">📈</div>
-            <h3>Emotional Trends</h3>
-            <p>Generate weekly or monthly reflection reports. Spot recurring patterns and see how your emotional landscape has shifted over time.</p>
+            <div class="feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <h3>Results Explained</h3>
+            <p>The top matches come with an AI-written explanation of exactly why they're relevant to your query — so the connection is clear at a glance.</p>
           </div>
           <div class="feature-card reveal">
-            <div class="feature-icon">⚡</div>
+            <div class="feature-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
             <h3>Fast & Lightweight</h3>
             <p>No bloated app to install. A clean, focused web interface built for the single purpose of helping you understand yourself.</p>
           </div>
@@ -167,7 +179,7 @@
               </li>
               <li>
                 <div class="check">✓</div>
-                <span>AI embeddings operate on <strong>encrypted data</strong>, not your words</span>
+                <span>AI generates only searchable metadata — your raw entry text is <strong>never stored in plaintext</strong></span>
               </li>
               <li>
                 <div class="check">✓</div>
@@ -178,7 +190,7 @@
           <div class="reveal">
             <div class="privacy-visual">
               <div class="enc-row">
-                <div class="enc-icon green">🔒</div>
+                <div class="enc-icon green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
                 <div>
                   <div class="enc-label">Your Entry</div>
                   <div class="enc-sub">Encrypted in your browser</div>
@@ -186,7 +198,7 @@
                 <span class="enc-status secure">Secure</span>
               </div>
               <div class="enc-row">
-                <div class="enc-icon green">📡</div>
+                <div class="enc-icon green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16.326A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.973"/><path d="m13 12-3 5h4l-3 5"/></svg></div>
                 <div>
                   <div class="enc-label">Transmission</div>
                   <div class="enc-sub">Only ciphertext sent over HTTPS</div>
@@ -194,7 +206,7 @@
                 <span class="enc-status secure">Encrypted</span>
               </div>
               <div class="enc-row">
-                <div class="enc-icon muted">🗄️</div>
+                <div class="enc-icon muted"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.657 4.03 3 9 3s9-1.343 9-3V5"/><path d="M3 12c0 1.657 4.03 3 9 3s9-1.343 9-3"/></svg></div>
                 <div>
                   <div class="enc-label">Database</div>
                   <div class="enc-sub">Stores only encrypted blobs</div>
@@ -202,7 +214,7 @@
                 <span class="enc-status never">No plaintext</span>
               </div>
               <div class="enc-row">
-                <div class="enc-icon muted">👤</div>
+                <div class="enc-icon muted"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg></div>
                 <div>
                   <div class="enc-label">Developer Access</div>
                   <div class="enc-sub">Cannot decrypt your entries</div>
@@ -210,7 +222,7 @@
                 <span class="enc-status never">None</span>
               </div>
               <div class="enc-row">
-                <div class="enc-icon green">🔓</div>
+                <div class="enc-icon green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></div>
                 <div>
                   <div class="enc-label">Decryption</div>
                   <div class="enc-sub">Happens only in your browser</div>
@@ -232,22 +244,22 @@
         </div>
         <div class="use-cases-grid">
           <div class="use-case-card reveal">
-            <span class="use-case-emoji">🧠</span>
+            <div class="use-case-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
             <h3>Find Emotional Patterns</h3>
             <p>Search "When do I feel most anxious?" and see a map of every time you've written about that feeling.</p>
           </div>
           <div class="use-case-card reveal">
-            <span class="use-case-emoji">🌱</span>
+            <div class="use-case-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
             <h3>Track Personal Growth</h3>
             <p>Compare who you were a year ago to who you are now. Let your own words show you how far you've come.</p>
           </div>
           <div class="use-case-card reveal">
-            <span class="use-case-emoji">🎯</span>
+            <div class="use-case-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg></div>
             <h3>Revisit Decisions</h3>
             <p>Remember what you were thinking the last time you faced a similar crossroads. Past-you has advice.</p>
           </div>
           <div class="use-case-card reveal">
-            <span class="use-case-emoji">📖</span>
+            <div class="use-case-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></div>
             <h3>Rediscover Moments</h3>
             <p>That feeling from a summer three years ago — you wrote about it. Now you can find it in seconds.</p>
           </div>
@@ -264,22 +276,22 @@
         </div>
         <div class="audience-grid">
           <div class="audience-card reveal">
-            <span class="audience-emoji">🎓</span>
+            <div class="audience-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
             <h3>College Students</h3>
             <p>Track the chaos of university life and search your own stress and growth patterns across semesters.</p>
           </div>
           <div class="audience-card reveal">
-            <span class="audience-emoji">💼</span>
+            <div class="audience-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
             <h3>Self-Improvement Focused</h3>
             <p>Use your journal as a data source for your personal development — measurable, searchable, yours.</p>
           </div>
           <div class="audience-card reveal">
-            <span class="audience-emoji">📓</span>
+            <div class="audience-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
             <h3>Dedicated Journalers</h3>
             <p>You've been writing for years. Now actually use what you've written — without reading everything twice.</p>
           </div>
           <div class="audience-card reveal">
-            <span class="audience-emoji">🛡️</span>
+            <div class="audience-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
             <h3>Privacy-Conscious Users</h3>
             <p>You want AI convenience without handing your most personal thoughts to a corporation. This is that.</p>
           </div>
@@ -994,10 +1006,16 @@ section {
   transform: translateY(-3px);
 }
 
-.use-case-emoji {
-  font-size: 1.8rem;
+.use-case-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--sml-color-accent);
+  color: var(--sml-color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 1rem;
-  display: block;
 }
 
 .use-case-card h3 {
@@ -1039,10 +1057,16 @@ section {
 
 .audience-card:hover { box-shadow: var(--sml-shadow-md); }
 
-.audience-emoji {
-  font-size: 2.2rem;
-  display: block;
-  margin-bottom: 0.75rem;
+.audience-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--sml-color-accent);
+  color: var(--sml-color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem;
 }
 
 .audience-card h3 {
