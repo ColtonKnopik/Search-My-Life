@@ -12,7 +12,6 @@ public class EntryResponse
     public string? Salt { get; set; }
     public string? Emotion { get; set; }
     public double? SentimentScore { get; set; }
-    public string? Summary { get; set; }
     public string[]? Tags { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -28,7 +27,6 @@ public class EntryResponse
             Salt = entry.Salt,
             Emotion = entry.Emotion,
             SentimentScore = entry.SentimentScore,
-            Summary = entry.Summary,
             Tags = DeserializeTags(entry.Tags),
             CreatedAt = entry.CreatedAt,
             UpdatedAt = entry.UpdatedAt

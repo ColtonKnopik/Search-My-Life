@@ -76,8 +76,7 @@ public class AnalysisController : ControllerBase
         {
             Emotion = analysis.Emotion,
             SentimentScore = analysis.SentimentScore,
-            Tags = analysis.Tags,
-            Summary = analysis.Summary
+            Tags = analysis.Tags
         });
         }
         catch (Exception ex)

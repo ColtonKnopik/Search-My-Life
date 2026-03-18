@@ -76,7 +76,6 @@ public class SearchController : ControllerBase
                     Salt = response.Salt,
                     Emotion = response.Emotion,
                     SentimentScore = response.SentimentScore,
-                    Summary = response.Summary,
                     Tags = response.Tags,
                     CreatedAt = response.CreatedAt,
                     UpdatedAt = response.UpdatedAt,
@@ -91,9 +90,11 @@ public class SearchController : ControllerBase
         var otherResults = allResults.Skip(3).Take(10).ToList();
 
         // Generate AI summary for the top 3
+        // Use DB entities directly — summary is internal and not included in response DTOs
+        var entryById = entries.ToDictionary(e => e.Id);
         var overview = string.Empty;
         var topSummaries = topResults
-            .Select(r => r.Summary ?? r.Title)
+            .Select(r => entryById.TryGetValue(r.Id, out var e) ? (e.Summary ?? r.Title) : r.Title)
             .Where(s => !string.IsNullOrEmpty(s))
             .ToArray();
 

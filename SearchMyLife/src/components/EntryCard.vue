@@ -85,9 +85,6 @@ async function toggleExpanded() {
           {{ tag }}
         </v-chip>
       </div>
-      <p v-if="entry.summary" class="text-body-2 text-medium-emphasis">
-        {{ entry.summary }}
-      </p>
       <v-alert
         v-if="relevanceReason"
         density="compact"
