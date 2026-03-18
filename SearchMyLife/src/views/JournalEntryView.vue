@@ -72,24 +72,25 @@ async function handleSave() {
     return
   }
 
+  if (!authStore.password) {
+    error.value = 'Your session has expired. Please log out and log back in to save entries securely.'
+    return
+  }
+
   loading.value = true
   error.value = null
   try {
     // Keep a reference to plaintext for AI analysis before encrypting
     const plaintext = content.value
 
-    let entryContent = plaintext
-    let iv = null
-    let salt = null
-
-    if (authStore.password) {
-      const encrypted = await encrypt(plaintext, authStore.password)
-      entryContent = encrypted.ciphertext
-      iv = encrypted.iv
-      salt = encrypted.salt
+    const encrypted = await encrypt(plaintext, authStore.password)
+    const entryData = {
+      title: title.value,
+      content: encrypted.ciphertext,
+      iv: encrypted.iv,
+      salt: encrypted.salt,
     }
 
-    const entryData = { title: title.value, content: entryContent, iv, salt }
     let saved
     if (isEditing.value) {
       saved = await journalStore.updateEntry(route.params.id, entryData)
