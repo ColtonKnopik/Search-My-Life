@@ -79,7 +79,7 @@ public class JournalService : IJournalService
         if (entry is null)
             return false;
 
-        _db.JournalEntries.Remove(entry);
+        entry.DeletedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync();
 
         return true;

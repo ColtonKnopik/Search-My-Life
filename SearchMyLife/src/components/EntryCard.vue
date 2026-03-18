@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { decrypt } from '@/services/cryptoService'
 
+import { useJournalStore } from '@/stores/journalStore'
+
 const props = defineProps({
   entry: {
     type: Object,
@@ -19,9 +21,23 @@ const props = defineProps({
 })
 
 const authStore = useAuthStore()
+const journalStore = useJournalStore()
 const expanded = ref(false)
 const decryptedContent = ref(null)
 const decryptError = ref(false)
+const deleteConfirm = ref(false)
+const deleting = ref(false)
+
+async function handleDelete() {
+  deleting.value = true
+  try {
+    await journalStore.deleteEntry(props.entry.id)
+  } catch {
+    deleteConfirm.value = false
+  } finally {
+    deleting.value = false
+  }
+}
 
 async function toggleExpanded() {
   expanded.value = !expanded.value
@@ -107,15 +123,40 @@ async function toggleExpanded() {
           <p v-else class="text-body-1" style="white-space: pre-wrap;">{{ decryptedContent }}</p>
         </v-card-text>
         <v-card-actions>
-          <v-spacer />
-          <v-btn
-            size="small"
-            variant="text"
-            :to="`/entry/${entry.id}`"
-            @click.stop
-          >
-            Edit
-          </v-btn>
+          <template v-if="!deleteConfirm">
+            <v-btn
+              size="small"
+              variant="text"
+              color="error"
+              prepend-icon="mdi-delete-outline"
+              @click.stop="deleteConfirm = true"
+            >
+              Delete
+            </v-btn>
+            <v-spacer />
+            <v-btn
+              size="small"
+              variant="text"
+              :to="`/entry/${entry.id}`"
+              @click.stop
+            >
+              Edit
+            </v-btn>
+          </template>
+          <template v-else>
+            <span class="text-caption text-medium-emphasis">Delete this entry?</span>
+            <v-spacer />
+            <v-btn size="small" variant="text" @click.stop="deleteConfirm = false">Cancel</v-btn>
+            <v-btn
+              size="small"
+              variant="tonal"
+              color="error"
+              :loading="deleting"
+              @click.stop="handleDelete"
+            >
+              Confirm
+            </v-btn>
+          </template>
         </v-card-actions>
       </div>
     </v-expand-transition>

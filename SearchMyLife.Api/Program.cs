@@ -93,6 +93,20 @@ using (var scope = app.Services.CreateScope())
     {
         db.Database.EnsureCreated();
         startupLogger.LogInformation("Database ready.");
+
+        // Safe schema update: add DeletedAt column to existing databases
+        try
+        {
+            var isSqlite = db.Database.ProviderName?.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) == true;
+            var sql = isSqlite
+                ? "ALTER TABLE JournalEntries ADD COLUMN DeletedAt TEXT NULL"
+                : "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'JournalEntries') AND name = N'DeletedAt') ALTER TABLE JournalEntries ADD DeletedAt DATETIME2 NULL";
+            db.Database.ExecuteSqlRaw(sql);
+        }
+        catch
+        {
+            // Column already exists — safe to ignore
+        }
     }
     catch (Exception ex)
     {

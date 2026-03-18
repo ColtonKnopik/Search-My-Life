@@ -26,6 +26,7 @@ public class AppDbContext : DbContext
             entity.HasIndex(e => e.UserId);
             entity.Property(e => e.EncryptedContent).IsRequired();
             entity.Property(e => e.Title).HasMaxLength(256);
+            entity.HasQueryFilter(e => e.DeletedAt == null);
             entity.HasOne(e => e.User)
                   .WithMany()
                   .HasForeignKey(e => e.UserId)
