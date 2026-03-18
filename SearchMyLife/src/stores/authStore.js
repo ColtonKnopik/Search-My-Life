@@ -5,6 +5,9 @@ import apiClient from '@/services/apiClient'
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('token') || null)
   const user = ref(parseStoredUser())
+  // Password is kept in memory only — never persisted.
+  // It is the key material for client-side AES-GCM encryption.
+  const password = ref(null)
 
   function parseStoredUser() {
     try {
@@ -18,19 +21,21 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => !!token.value)
 
-  async function login(email, password) {
-    const response = await apiClient.post('/auth/login', { email, password })
+  async function login(email, pwd) {
+    const response = await apiClient.post('/auth/login', { email, password: pwd })
     token.value = response.data.token
     user.value = response.data.user
+    password.value = pwd
     localStorage.setItem('token', token.value)
     localStorage.setItem('user', JSON.stringify(user.value))
     return response.data
   }
 
-  async function register(email, password) {
-    const response = await apiClient.post('/auth/register', { email, password })
+  async function register(email, pwd) {
+    const response = await apiClient.post('/auth/register', { email, password: pwd })
     token.value = response.data.token
     user.value = response.data.user
+    password.value = pwd
     localStorage.setItem('token', token.value)
     localStorage.setItem('user', JSON.stringify(user.value))
     return response.data
@@ -39,9 +44,10 @@ export const useAuthStore = defineStore('auth', () => {
   function logout() {
     token.value = null
     user.value = null
+    password.value = null
     localStorage.removeItem('token')
     localStorage.removeItem('user')
   }
 
-  return { token, user, isAuthenticated, login, register, logout }
+  return { token, user, password, isAuthenticated, login, register, logout }
 })

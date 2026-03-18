@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue'
+import { useAuthStore } from '@/stores/authStore'
+import { decrypt } from '@/services/cryptoService'
 
-defineProps({
+const props = defineProps({
   entry: {
     type: Object,
     required: true,
@@ -16,7 +18,36 @@ defineProps({
   },
 })
 
+const authStore = useAuthStore()
 const expanded = ref(false)
+const decryptedContent = ref(null)
+const decryptError = ref(false)
+
+async function toggleExpanded() {
+  expanded.value = !expanded.value
+
+  if (expanded.value && decryptedContent.value === null && !decryptError.value) {
+    if (props.entry.iv && props.entry.salt) {
+      if (!authStore.password) {
+        decryptError.value = true
+        return
+      }
+      try {
+        decryptedContent.value = await decrypt(
+          props.entry.content,
+          props.entry.iv,
+          props.entry.salt,
+          authStore.password,
+        )
+      } catch {
+        decryptError.value = true
+      }
+    } else {
+      // Legacy plaintext entry — no IV
+      decryptedContent.value = props.entry.content
+    }
+  }
+}
 </script>
 
 <template>
@@ -26,7 +57,7 @@ const expanded = ref(false)
     rounded="lg"
     hover
     :border="rank !== null"
-    @click="expanded = !expanded"
+    @click="toggleExpanded"
   >
     <v-card-item>
       <template v-if="rank !== null" #prepend>
@@ -73,7 +104,10 @@ const expanded = ref(false)
       <div v-show="expanded">
         <v-divider />
         <v-card-text>
-          <p class="text-body-1" style="white-space: pre-wrap;">{{ entry.content }}</p>
+          <v-alert v-if="decryptError" type="warning" density="compact" icon="mdi-lock">
+            Log out and back in to view this entry's content.
+          </v-alert>
+          <p v-else class="text-body-1" style="white-space: pre-wrap;">{{ decryptedContent }}</p>
           <div v-if="entry.sentimentScore != null" class="mt-4">
             <span class="text-caption text-medium-emphasis">
               Sentiment: {{ entry.sentimentScore > 0 ? '+' : '' }}{{ entry.sentimentScore.toFixed(2) }}
