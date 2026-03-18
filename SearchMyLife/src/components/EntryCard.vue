@@ -108,11 +108,6 @@ async function toggleExpanded() {
             Log out and back in to view this entry's content.
           </v-alert>
           <p v-else class="text-body-1" style="white-space: pre-wrap;">{{ decryptedContent }}</p>
-          <div v-if="entry.sentimentScore != null" class="mt-4">
-            <span class="text-caption text-medium-emphasis">
-              Sentiment: {{ entry.sentimentScore > 0 ? '+' : '' }}{{ entry.sentimentScore.toFixed(2) }}
-            </span>
-          </div>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
