@@ -121,10 +121,7 @@ using (var scope = app.Services.CreateScope())
         startupLogger.LogError(ex, "Database initialisation failed. Check the connection string and firewall rules.");
     }
 
-    if (app.Environment.IsDevelopment())
-    {
-        await DbSeeder.SeedAsync(db);
-    }
+    await DbSeeder.SeedAsync(db);
 }
 
 // Ensure Azure AI Search index exists
