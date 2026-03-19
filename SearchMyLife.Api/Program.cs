@@ -100,12 +100,20 @@ using (var scope = app.Services.CreateScope())
             var isSqlite = db.Database.ProviderName?.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) == true;
             var sql = isSqlite
                 ? "ALTER TABLE JournalEntries ADD COLUMN DeletedAt TEXT NULL"
-                : "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'JournalEntries') AND name = N'DeletedAt') ALTER TABLE JournalEntries ADD DeletedAt DATETIME2 NULL";
+                : "IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'dbo.JournalEntries') AND name = N'DeletedAt') ALTER TABLE dbo.JournalEntries ADD DeletedAt DATETIME2 NULL";
             db.Database.ExecuteSqlRaw(sql);
+            startupLogger.LogInformation("Schema up to date.");
         }
-        catch
+        catch (Exception migEx)
         {
-            // Column already exists — safe to ignore
+            // Duplicate column means the migration already ran — expected on subsequent startups
+            var alreadyExists = migEx.Message.Contains("duplicate column", StringComparison.OrdinalIgnoreCase)
+                             || migEx.Message.Contains("already has a column", StringComparison.OrdinalIgnoreCase)
+                             || migEx.Message.Contains("Column names in each table must be unique", StringComparison.OrdinalIgnoreCase);
+            if (alreadyExists)
+                startupLogger.LogInformation("DeletedAt column already present — skipping migration.");
+            else
+                startupLogger.LogWarning(migEx, "Schema migration failed — column may require manual migration.");
         }
     }
     catch (Exception ex)
